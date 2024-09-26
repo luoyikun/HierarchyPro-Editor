@@ -20,6 +20,13 @@ MonoBehaviour:
     - 0f8c3ded17ba7094288d44c3663749b0
   - pin: 0
     path:
+    - Assets/Plugins/HierarchyPro/Demo Scenes/Scene - DrawInHier/ExampleScene - DrawInHier.unity
+    - Assets/luoyikun/New Scene.unity
+    guid:
+    - 0f8c3ded17ba7094288d44c3663749b0
+    - 5df0d4251c5ad864b9fcd0f6aed8b6ff
+  - pin: 0
+    path:
     - Assets/Plugins/EModules/Hierarchy/Demo Scenes/Hierarchy Example Scene.unity
     guid:
     - d424a2e112155654abf917dbd562489c

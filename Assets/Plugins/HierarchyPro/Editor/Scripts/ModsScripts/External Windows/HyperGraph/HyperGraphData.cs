@@ -270,6 +270,7 @@ namespace EMX.HierarchyPlugin.Editor.Mods.HyperGraph
 
 		private void INIT_COMPS()
 		{
+            //Debug.Log("初始化组件");
 			//comps = HierarchyExtensions.Utilities.GetComponentFast<Component>.GetAll(CurrentSelection as GameObject).Where(c => c).ToArray();
 			comps = (CurrentSelection as GameObject).GetComponents<Component>().Where( c => c ).ToArray();
 
@@ -457,191 +458,205 @@ namespace EMX.HierarchyPlugin.Editor.Mods.HyperGraph
 				TARGET_CURRENT_Y = 0;
 				var mre = moduleRect.y;
 
-				for ( int i = 0; i < comps.Length; i++ )
-				{
-					if ( !comps[ i ] )
-					{
-						Reset();
-						continue;
-					}
+                bool isDraw1 = false;
+                if (isDraw1 == true)
+                {
+                    //
+                    for (int i = 0; i < comps.Length; i++)
+                    {
+                        if (!comps[i])
+                        {
+                            Reset();
+                            continue;
+                        }
 
-					var accessor = GetReflectionFields(comps[i]);
+                        var accessor = GetReflectionFields(comps[i]);
 
-					if ( !accessor.completed_thread ) continue;
+                        if (!accessor.completed_thread) continue;
 
-					if ( !compsinitialized[ i ] )
-					{
-						if ( accessor.InitializeTarget_InMainThread( (comps[ i ]) ) )
-							compsinitialized[ i ] = true;
-					}
+                        if (!compsinitialized[i])
+                        {
+                            if (accessor.InitializeTarget_InMainThread((comps[i])))
+                                compsinitialized[i] = true;
+                        }
 
-					moduleRect.height = SIZE.COMP();
-					WRITE_ARROW_A_POSES( moduleRect, i );
-					moduleRect.y += moduleRect.height + SIZE.SPACE();
+                        moduleRect.height = SIZE.COMP();
+                        WRITE_ARROW_A_POSES(moduleRect, i);
+                        moduleRect.y += moduleRect.height + SIZE.SPACE();
 
-					for ( int fIndex = 0; fIndex < accessor.faList.Length; fIndex++ )
-					{
-						moduleRect.height = SIZE.VAR();
-						moduleRect.y += moduleRect.height + SIZE.SPACE();
-					}
-				}
+                        for (int fIndex = 0; fIndex < accessor.faList.Length; fIndex++)
+                        {
+                            moduleRect.height = SIZE.VAR();
+                            moduleRect.y += moduleRect.height + SIZE.SPACE();
+                        }
+                    }
+                }
 
 
 				moduleRect.y = mre;
 				drawIndex = 0;
 
-				for ( int i = 0; i < comps.Length; i++ )
-				{
-					if ( !comps[ i ] )
-					{
-						Reset();
-						continue;
-					}
+                bool isDraw2 = true;
+                if (isDraw2 == true)
+                {
+                    for (int i = 0; i < comps.Length; i++)
+                    {
+                        if (!comps[i])
+                        {
+                            Reset();
+                            continue;
+                        }
 
-					var accessor = GetReflectionFields(comps[i]);
+                        var accessor = GetReflectionFields(comps[i]);
 
-					if ( !accessor.completed_thread ) continue;
+                        if (!accessor.completed_thread) continue;
 
-					if ( !compsinitialized[ i ] )
-					{
-						if ( accessor.InitializeTarget_InMainThread( (comps[ i ]) ) )
-							compsinitialized[ i ] = true;
-					}
+                        if (!compsinitialized[i])
+                        {
+                            if (accessor.InitializeTarget_InMainThread((comps[i])))
+                                compsinitialized[i] = true;
+                        }
 
-					//if (f.Count == 0) continue;
-					moduleRect.height = SIZE.COMP();
+                        //if (f.Count == 0) continue;
+                        moduleRect.height = SIZE.COMP();
 
-					////////////////COMPONENT
-					content.text = comps[ i ].GetType().Name;
-					content.tooltip = content.text + " : Component";
-					HIPERUI_LINE_RDTRIANGLE.fontSize = Mathf.RoundToInt( (FONT_SIZE() - 1) * HALF_SCALE() );
-					sizememory[ i ] = HIPERUI_LINE_RDTRIANGLE.CalcSize( content ).x / CURRENT_SCALE;
-					sizememory[ i ] = moduleRect.width = Math.Min( sizememory[ i ] + 10, DEFAULTWIDTH( controller ) );
+                        ////////////////COMPONENT
+                        content.text = comps[i].GetType().Name;
+                        content.tooltip = content.text + " : Component";
+                        HIPERUI_LINE_RDTRIANGLE.fontSize = Mathf.RoundToInt((FONT_SIZE() - 1) * HALF_SCALE());
+                        sizememory[i] = HIPERUI_LINE_RDTRIANGLE.CalcSize(content).x / CURRENT_SCALE;
+                        sizememory[i] = moduleRect.width = Math.Min(sizememory[i] + 10, DEFAULTWIDTH(controller));
 
-					if ( Event.current.type == EventType.Repaint )
-					{ /* var ccc = GUI.color;
+                        if (Event.current.type == EventType.Repaint)
+                        { /* var ccc = GUI.color;
 						     if (!EditorGUIUtility.isProSkin)GUI.color *= alpha;*/
-						Draw( moduleRect, content, HIPERUI_LINE_RDTRIANGLE, false, false, false, false );
-						// GUI.color = ccc;
-					}
+                            Draw(moduleRect, content, HIPERUI_LINE_RDTRIANGLE, false, false, false, false);
+                            // GUI.color = ccc;
+                        }
 
-					TOOLTIP_WITH_SCALE( moduleRect, content );
+                        TOOLTIP_WITH_SCALE(moduleRect, content);
 
-					DO_ARROW_A( moduleRect, i );
-					////////////////COMPONENT/////////////////////////////////////////////////
-					moduleRect.y += moduleRect.height + SIZE.SPACE();
+                        DO_ARROW_A(moduleRect, i);
+                        ////////////////COMPONENT/////////////////////////////////////////////////
+                        moduleRect.y += moduleRect.height + SIZE.SPACE();
 
-					for ( int fIndex = 0; fIndex < accessor.faList.Length; fIndex++ )
-					{
-						var value = accessor.faList[fIndex].GetValue(comps[i]) /*as UnityEngine.Object*/;
-						// var asd = GUI.contentColor;
-						bool isnull = Tools.IsObjectNull(value);
-						/* if (isnull)
-						 {   GUI.contentColor = adapter.par.HiperGraphParams.RED_HIGKLIGHTING ? Color.red : alpha;
-						 }*/
+                        bool isDraw3 = true ;
+                        if (isDraw3 == true)
+                        {
+                            //绘制每个组件的可赋值的字段
+                            for (int fIndex = 0; fIndex < accessor.faList.Length; fIndex++)
+                            {
+                                var value = accessor.faList[fIndex].GetValue(comps[i]) /*as UnityEngine.Object*/;
+                                // var asd = GUI.contentColor;
+                                bool isnull = Tools.IsObjectNull(value);
+                                /* if (isnull)
+                                 {   GUI.contentColor = adapter.par.HiperGraphParams.RED_HIGKLIGHTING ? Color.red : alpha;
+                                 }*/
 
-						// MonoBehaviour.print(value);
-						moduleRect.height = SIZE.VAR();
-						var lineRect = moduleRect;
-						lineRect.x += 6;
-						lineRect.width = lineRect.height;
-
-
-						if ( Event.current.type == EventType.Repaint )
-						{
-							var asdas = GUI.color;
-
-							if ( isnull && adapter.par_e.HYPERGRAPH_DRAW_RED_FOR_NULLS > 0 )
-							{
-								//GUI.color *= adapter.par_e.HYPERGRAPH_RED_HIGKLIGHTING ? Color.red : alpha; 
-								lineRect.x += lineRect.width / 3;
-								lineRect.width /= 3;
-								GUI.color *= Color.red;
-							}
-							else
-							{
-								//GUI.color *= alpha;
-							}
-
-							Draw( lineRect, HIPERUI_MARKER_BOX, false, false, false, false );
-							GUI.color = asdas;
-						}
-
-						lineRect.x += lineRect.width;
-						lineRect.width = DEFAULTWIDTH( controller ) - 6 - lineRect.width;
-
-						// content.text = value == null ? "null" : value
-						///////////////FIELD
-						content.text = accessor.faList[ fIndex ].Name;
-						content.tooltip = "var " + content.text;
-						HIPERUI_LINE_BLUEGB_PERSONAL.fontSize = HIPERUI_LINE_BLUEGB.fontSize = Mathf.RoundToInt( (FONT_SIZE() - 1) * HALF_SCALE() );
-
-						//  HIPERUI_LINE_BLUEGB_PERSONAL.fontSize = FONT_8() - 1;
-						if ( Event.current.type == EventType.Repaint )
-						{
-
-							var ts = EditorGUIUtility.isProSkin  ? HIPERUI_LINE_BLUEGB : HIPERUI_LINE_BLUEGB_PERSONAL;
+                                // MonoBehaviour.print(value);
+                                moduleRect.height = SIZE.VAR();
+                                var lineRect = moduleRect;
+                                lineRect.x += 6;
+                                lineRect.width = lineRect.height;
 
 
+                                if (Event.current.type == EventType.Repaint)
+                                {
+                                    var asdas = GUI.color;
 
-							//GUI.color *= adapter.par_e.HYPERGRAPH_RED_HIGKLIGHTING ? Color.red : alpha; 
-							var otc = ts.normal.textColor;
-							var oal = ts.alignment;
-							var oc= ts.clipping;
-							if ( isnull && adapter.par_e.HYPERGRAPH_DRAW_RED_FOR_NULLS > 1 ) ts.normal.textColor = Color.red;
-							if ( adapter.par_e.HYPERGRAPH_FIELD_NAMES_ALIGNMENT == 1 ) ts.alignment = TextAnchor.MiddleRight;
-							else ts.alignment = TextAnchor.MiddleLeft;
-							if ( adapter.par_e.HYPERGRAPH_CLIP_NAMES ) ts.clipping = TextClipping.Clip;
+                                    if (isnull && adapter.par_e.HYPERGRAPH_DRAW_RED_FOR_NULLS > 0)
+                                    {
+                                        //GUI.color *= adapter.par_e.HYPERGRAPH_RED_HIGKLIGHTING ? Color.red : alpha; 
+                                        lineRect.x += lineRect.width / 3;
+                                        lineRect.width /= 3;
+                                        GUI.color *= Color.red;
+                                    }
+                                    else
+                                    {
+                                        //GUI.color *= alpha;
+                                    }
+                                    //没有引用时绘制1个红色窄矩形，有引用时绘制1个白色矩形块
+                                    Draw(lineRect, HIPERUI_MARKER_BOX, false, false, false, false);
+                                    GUI.color = asdas;
+                                }
 
-							if ( adapter.par_e.HYPERGRAPH_CLIP_NAMES && adapter.par_e.HYPERGRAPH_FIELD_NAMES_ALIGNMENT == 1 )
-								if ( lineRect.width * CURRENT_SCALE < ts.CalcSize( content ).x )
-									ts.alignment = TextAnchor.MiddleLeft;
+                                lineRect.x += lineRect.width;
+                                lineRect.width = DEFAULTWIDTH(controller) - 6 - lineRect.width;
 
-							try { Draw( lineRect, content, ts, false, false, false, false ); }
-							catch { }
+                                // content.text = value == null ? "null" : value
+                                ///////////////FIELD 绘制字段
+                                ///字段的名字
+                                content.text = accessor.faList[fIndex].Name;
+                                content.tooltip = "var " + content.text;
+                                HIPERUI_LINE_BLUEGB_PERSONAL.fontSize = HIPERUI_LINE_BLUEGB.fontSize = Mathf.RoundToInt((FONT_SIZE() - 1) * HALF_SCALE());
 
-							if ( adapter.par_e.HYPERGRAPH_CLIP_NAMES ) ts.clipping = oc;
-							if ( isnull && adapter.par_e.HYPERGRAPH_DRAW_RED_FOR_NULLS > 1 ) ts.normal.textColor = otc;
-							ts.alignment = oal;
+                                //  HIPERUI_LINE_BLUEGB_PERSONAL.fontSize = FONT_8() - 1;
+                                if (Event.current.type == EventType.Repaint)
+                                {
 
-						}
-
-						TOOLTIP_WITH_SCALE( lineRect, content );
-
-
-						// if (SELF_TARGETS.ContainsKey()
-						accessor.faList[ fIndex ].CheckID( selection_id, SEL_INC );
-
-						if ( accessor.faList[ fIndex ].GetAllValuesCache == null || !accessor.faList[ fIndex ].GetAllValuesCache.ContainsKey( comps[ i ].GetInstanceID() ) )
-						{
-							if ( accessor.faList[ fIndex ].GetAllValuesCache == null ) accessor.faList[ fIndex ].GetAllValuesCache = new Dictionary<int, Dictionary<string, object>>();
-
-
-							accessor.faList[ fIndex ].GetAllValuesCache.Add( comps[ i ].GetInstanceID(), accessor.faList[ fIndex ].GetAllValues( comps[ i ], 0, adapter.par_e.HYPERGRAPH_EVENTS_MODE | adapter.par_e.HYPERGRAPH_SKIP_ARRAYS ) );
-						}
-
-						foreach ( var item in accessor.faList[ fIndex ].GetAllValuesCache[ comps[ i ].GetInstanceID() ] )
-						{
-							var v = item.Value as UnityEngine.Object;
-
-							if ( !v ) continue;
-
-                            //绘制被控制
-							DO_ARROW_B( controller, lineRect, v, fIndex );
-						}
-
-						/*// OLD SINLE VALUE
-							DO_ARROW_B( controller , lineRect , value , fIndex );
-						*/ // OLD SINLE VALUE
-						   ///////////////FIELD/////////////////////////////////////////////////
+                                    var ts = EditorGUIUtility.isProSkin ? HIPERUI_LINE_BLUEGB : HIPERUI_LINE_BLUEGB_PERSONAL;
 
 
-						moduleRect.y += moduleRect.height + SIZE.SPACE();
 
-						//GUI.contentColor = asd;
-					}
-				}
+                                    //GUI.color *= adapter.par_e.HYPERGRAPH_RED_HIGKLIGHTING ? Color.red : alpha; 
+                                    var otc = ts.normal.textColor;
+                                    var oal = ts.alignment;
+                                    var oc = ts.clipping;
+                                    if (isnull && adapter.par_e.HYPERGRAPH_DRAW_RED_FOR_NULLS > 1) ts.normal.textColor = Color.red;
+                                    if (adapter.par_e.HYPERGRAPH_FIELD_NAMES_ALIGNMENT == 1) ts.alignment = TextAnchor.MiddleRight;
+                                    else ts.alignment = TextAnchor.MiddleLeft;
+                                    if (adapter.par_e.HYPERGRAPH_CLIP_NAMES) ts.clipping = TextClipping.Clip;
 
+                                    if (adapter.par_e.HYPERGRAPH_CLIP_NAMES && adapter.par_e.HYPERGRAPH_FIELD_NAMES_ALIGNMENT == 1)
+                                        if (lineRect.width * CURRENT_SCALE < ts.CalcSize(content).x)
+                                            ts.alignment = TextAnchor.MiddleLeft;
+
+                                    try { Draw(lineRect, content, ts, false, false, false, false); }
+                                    catch { }
+
+                                    if (adapter.par_e.HYPERGRAPH_CLIP_NAMES) ts.clipping = oc;
+                                    if (isnull && adapter.par_e.HYPERGRAPH_DRAW_RED_FOR_NULLS > 1) ts.normal.textColor = otc;
+                                    ts.alignment = oal;
+
+                                }
+
+                                TOOLTIP_WITH_SCALE(lineRect, content);
+
+
+                                // if (SELF_TARGETS.ContainsKey()
+                                accessor.faList[fIndex].CheckID(selection_id, SEL_INC);
+
+                                if (accessor.faList[fIndex].GetAllValuesCache == null || !accessor.faList[fIndex].GetAllValuesCache.ContainsKey(comps[i].GetInstanceID()))
+                                {
+                                    if (accessor.faList[fIndex].GetAllValuesCache == null) accessor.faList[fIndex].GetAllValuesCache = new Dictionary<int, Dictionary<string, object>>();
+
+
+                                    accessor.faList[fIndex].GetAllValuesCache.Add(comps[i].GetInstanceID(), accessor.faList[fIndex].GetAllValues(comps[i], 0, adapter.par_e.HYPERGRAPH_EVENTS_MODE | adapter.par_e.HYPERGRAPH_SKIP_ARRAYS));
+                                }
+
+                                foreach (var item in accessor.faList[fIndex].GetAllValuesCache[comps[i].GetInstanceID()])
+                                {
+                                    var v = item.Value as UnityEngine.Object;
+
+                                    if (!v) continue;
+
+                                    //绘制被控制
+                                    DO_ARROW_B(controller, lineRect, v, fIndex);
+                                }
+
+                                /*// OLD SINLE VALUE
+                                    DO_ARROW_B( controller , lineRect , value , fIndex );
+                                */ // OLD SINLE VALUE
+                                   ///////////////FIELD/////////////////////////////////////////////////
+
+
+                                moduleRect.y += moduleRect.height + SIZE.SPACE();
+
+                                //GUI.contentColor = asd;
+                            }
+                        }
+                    }
+                }
 				DRAWARROWED_BEZIER_COMPOLETE();
 
 				DRAWINPUTS( controller );

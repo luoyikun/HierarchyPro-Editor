@@ -11,6 +11,7 @@ namespace Examples.HierarchyPlugin
 {
 	public class Functions_DrawInHier_Example : MonoBehaviour
 	{
+        public int testA;
         public GameObject[] m_arrObj;
 
 		[DRAW_IN_HIER] //FIELD

@@ -5,11 +5,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Reflection;
 using System.Collections.Concurrent;
+using MixFramework;
 
 namespace EMX.HierarchyPlugin.Editor
 {
 
-	partial class Tools
+	public partial  class Tools
 	{
 		static Type serType2 = typeof(System.NonSerializedAttribute);
 		static Type serType = typeof(SerializeField);
@@ -35,20 +36,21 @@ namespace EMX.HierarchyPlugin.Editor
              object GetValue( object o );
          }*/
 
+        //某个组件中某个字段
 		public class FieldAdapter
 		{
 			//UnityEngine.Events.UnityEvent
-			bool isObject;
+			public bool isObject;
 			bool isField;
 			FieldInfo f;
 			PropertyInfo p;
 			// public Type ObjectType = null;
 			public string Name;
 			//public FieldAdapter[] childFields;
-			bool isClass;
+			public bool isClass;
 			public ConcurrentDictionary<string, FieldAdapter> childFields;
-			bool isEnumerable;
-			bool isList;
+			public bool isEnumerable;
+			public bool isList;
 			//bool UnityEventMarker;
 			static bool? assignFromArray;
 			Dictionary<string, object> fastDic;
@@ -64,6 +66,7 @@ namespace EMX.HierarchyPlugin.Editor
 				res.isField = true;
 				res.f = f;
 				res.Name = f.Name;
+                //Debug.Log($"设置字段名{f.Name}");
 				return res;
 			}
 			public static FieldAdapter TryToCreate(PropertyInfo p, bool includeArrays)
@@ -77,7 +80,8 @@ namespace EMX.HierarchyPlugin.Editor
 				res.isField = false;
 				res.p = p;
 				res.Name = p.Name;
-				return res;
+                //Debug.Log($"设置2字段名{p.Name}");
+                return res;
 			}
 
 			static bool HasUnityEvent(ref Dictionary<string, FieldAdapter> arr)
@@ -286,6 +290,7 @@ namespace EMX.HierarchyPlugin.Editor
 						{
 							foreach (var a in childFields.Values.SelectMany(c => c.GetAllValues(item, deep, searchType)))
 							{
+                                Debug.Log($"GetAllValues.dic增加{Name + '#' + i + "#/" + a.Key}");
 								dic.Add(Name + '#' + i + "#/" + a.Key, a.Value);
 							}
 						}
@@ -618,16 +623,28 @@ namespace EMX.HierarchyPlugin.Editor
 
 			public object GetValue(object o)
 			{   //  if ( !isObject ) return null;
-				if (isField) res = f.GetValue(o);
-				else res = p.GetValue(o, null);
+                if (isField)
+                {
+                    res = f.GetValue(o);
+                    //Debug.Log($"获取到字段值{f.Name}");
+                }
+                else
+                    res = p.GetValue(o, null);
 
-				// if ( isObject )
+                // if ( isObject )
+                //PublicFunc.LogObj(res,$"获取到字段值{f.Name}");
 				return res;
 			}
 			public void SetValue(object o, object value)
 			{   //if ( !isObject ) return;
-				if (isField) f.SetValue(o, value);
-				else p.SetValue(o, value, null);
+                Debug.Log($"设置字段值");
+                if (isField)
+                {
+                    
+                    f.SetValue(o, value);
+                }
+                else
+                    p.SetValue(o, value, null);
 			}
 
 

@@ -521,6 +521,7 @@ namespace EMX.HierarchyPlugin.Editor
 
 		internal static ConcurrentDictionary<string, FieldAdapter> GET_FIELDS( Type type, bool includeArrays = true )
 		{
+            //Debug.Log($"获得组件中字段{type.GetType().Name}");
 			var SCAN_FIELDS_CACHE = includeArrays ? _SCAN_FIELDS_CACHE : _SCAN_FIELDS_CACHE_NOARRAYS;
 
 			//  if ( SCAN_FIELDS_CACHE.ContainsKey( type ) ) SCAN_FIELDS_CACHE.Remove( type );

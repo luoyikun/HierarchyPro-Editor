@@ -1,8 +1,8 @@
 {
     "name": "EMX.HierarchyPro.Editor",
-    "rootNamespace": "",
     "references": [
-        "GUID:3d4cb66ee89ed6741be4eeb0942e8b3f"
+        "GUID:3d4cb66ee89ed6741be4eeb0942e8b3f",
+        "GUID:41cfaf19d33a7654b96db9db331e2a95"
     ],
     "includePlatforms": [
         "Editor"
