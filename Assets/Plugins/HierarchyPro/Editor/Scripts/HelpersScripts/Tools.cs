@@ -11,7 +11,7 @@ using UnityEditorInternal;
 namespace EMX.HierarchyPlugin.Editor
 {
 
-	partial class Tools
+	public partial class Tools
 	{
 
 
@@ -341,7 +341,7 @@ namespace EMX.HierarchyPlugin.Editor
 
 
 
-		internal static bool IsObjectNull( /*Type type ,*/ object result )
+		public static bool IsObjectNull( /*Type type ,*/ object result )
 		{   //if ( !type.IsClass ) return false;
 			if ( result is UnityEngine.Object ) return !(result as UnityEngine.Object);
 

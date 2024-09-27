@@ -38,7 +38,7 @@ namespace MixFramework
                 dicChildInstanceID.Add(comps[i].GetInstanceID(), comps[i]);
             }
 
-            //先上找父物体
+            //向上找父物体
             Transform par = Selection.activeGameObject.transform.parent;
             while (par != null)
             {
@@ -48,6 +48,21 @@ namespace MixFramework
             
         }
 
+        static bool IsObjectNull(object obj)
+        {
+            if (obj == null)
+            {
+                return true;
+            }
+            else
+            {
+                if (obj.ToString() == "null")
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         static void DoEditorParentFindBind(Transform par)
         {
             Component[] comps = par.GetComponents<Component>();
@@ -74,26 +89,30 @@ namespace MixFramework
                         object res = null;
                         res = fa.GetValue(com);
 
-                        if (res == null)
+                        if (IsObjectNull(res))
                         {
                             continue;
                         }
 
                         if (fa.isEnumerable)
                         {
-                            //数组形式
+                            //数组形式,包含array，list
                             var dic = new Dictionary<string, object>();
                             int resItemIdx = 0;
                             foreach (var resItem in (IEnumerable)res)
                             {
-
+                                if (IsObjectNull(resItem))
+                                {
+                                    continue;
+                                }
                                 if (resItem != null)
                                 {
                                     UnityEngine.Object objResItem = resItem as UnityEngine.Object;
                                     int instanceID = objResItem.GetInstanceID();
                                     if (dicChildInstanceID.ContainsKey(instanceID))
                                     {
-                                        Debug.Log($"物体{par.name}中组件{type.Name}中字段{item.Name}包含{dicChildInstanceID[instanceID]},索引为{resItemIdx}");
+                                        
+                                        Debug.Log($"物体{par.name}中组件{type.Name}中字段{item.Name}包含{dicChildInstanceID[instanceID]},索引为{resItemIdx}",par.gameObject);
                                     }
                                 }
                                 resItemIdx++;
@@ -108,11 +127,12 @@ namespace MixFramework
                                 int instanceID = objResItem.GetInstanceID();
                                 if (dicChildInstanceID.ContainsKey(instanceID))
                                 {
-                                    Debug.Log($"物体{par.name}中组件{type.Name}中字段{item.Name}包含{dicChildInstanceID[instanceID]}");
+                                    Debug.Log($"物体{par.name}中组件{type.Name}中字段{item.Name}包含{dicChildInstanceID[instanceID]}",par.gameObject);
                                 }
                             }
 
                         }
+                        
                     }
                 }
             }

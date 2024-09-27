@@ -13,6 +13,7 @@ namespace Examples.HierarchyPlugin
 	{
         public int testA;
         public GameObject[] m_arrObj;
+        public List<GameObject> m_listObj;
 
 		[DRAW_IN_HIER] //FIELD
 		public GameObject go_field_a = null;
@@ -37,6 +38,10 @@ namespace Examples.HierarchyPlugin
 		internal EntType type_enum = EntType.Mice;
 		internal enum EntType { Dog, Cat, Mice }
 
-	}
+        private void Start()
+        {
+            Debug.Log($"this.gameObject", this.gameObject);
+        }
+    }
 }
 #endif
